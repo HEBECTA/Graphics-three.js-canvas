@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Figura</title>
+
+    <style>
+        body {margin: 0;}
+        canvas {width: 100%; height: 100%;}
+    </style>
+
+</head>
+
+<body>
+    <script src="../libraries/three.js"></script>
+    <script src="../libraries/OrbitControls.js"></script>
+    <script src="../libraries/dat.gui.js"></script>
+
+    <script>
+        var scene = new THREE.Scene();
+        var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+        var renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        window.addEventListener('resize', function(){
+            camera.aspect = window.innerWidth/window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }, true);
+
+        controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+        // O
+        var octahedronGeo = new THREE.OctahedronGeometry(1 * 0.99 , 0);
+        var octahedronMat = new THREE.MeshLambertMaterial({color: 0xFFFF00, transparent: true, side: THREE.BackSide});
+        var octahedron = new THREE.Mesh(octahedronGeo, octahedronMat);
+
+        // T
+        var tetrahedronGeo = new THREE.TetrahedronGeometry(Math.sqrt(3) , 0);
+        var tetrahedronMat = new THREE.MeshLambertMaterial({color: 0x00FF00, transparent: true, side: THREE.BackSide});
+        var tetrahedron = new THREE.Mesh(tetrahedronGeo, tetrahedronMat);
+
+        // H
+        var boxGeo = new THREE.BoxGeometry(2, 2, 2);
+        var boxMat = new THREE.MeshLambertMaterial({color: 0xFF0000, transparent: true, side: THREE.BackSide});
+        var cube = new THREE.Mesh(boxGeo, boxMat);
+
+        // D
+        var dodecahedronGeo = new THREE.DodecahedronGeometry(Math.sqrt(3), 0);
+        var dodecahedronMat = new THREE.MeshLambertMaterial({color: 0xFFFFFF, transparent: true, side: THREE.BackSide});
+        var dodecahedron = new THREE.Mesh(dodecahedronGeo, dodecahedronMat);
+        
+        scene.add(octahedron);
+        scene.add(tetrahedron);
+        scene.add(cube);
+        scene.add(dodecahedron);
+
+        camera.position.z = 15;
+
+        var ambientLight = new THREE.AmbientLight( 0x535353 ); // soft white light
+        //scene.add( ambientLight );
+
+        var spotLight = new THREE.SpotLight(0xf9f9f9);
+        spotLight.position.set(15, 13, 7);
+        scene.add(spotLight);
+
+        var spotLight = new THREE.SpotLight(0xf9f9f9);
+        spotLight.position.set(-15, -13, -7);
+        scene.add(spotLight);
+
+        // M E N U   C O N T R O L
+
+        var octahedronMenu = new function(){
+
+        this.FrontFace = false;
+        this.Opacity = 1;
+
+        this.updateGeo = function(){
+            //scene.remove(octahedron);
+            removeFigures();
+
+            octahedron = new THREE.Mesh(octahedronGeo ,
+                 new THREE.MeshLambertMaterial
+                 (
+                    octahedronMenu.FrontFace ? {color: 0xFFFF00, transparent: true, opacity: octahedronMenu.Opacity, side: THREE.FrontSide} :
+                                 {color: 0xFFFF00, transparent: true, opacity: octahedronMenu.Opacity, side: THREE.BackSide}
+                 )
+                );
+
+            //scene.add(octahedron);
+            addFigures();
+            };
+        };
+
+        var tetrahedronMenu = new function(){
+            this.FrontFace = false;
+            this.Opacity = 1;
+
+            this.updateGeo = function(){
+                //scene.remove(tetrahedron);
+                removeFigures();
+
+                tetrahedron = new THREE.Mesh(tetrahedronGeo ,
+                 new THREE.MeshLambertMaterial
+                 (
+                    tetrahedronMenu.FrontFace ? {color: 0x00FF00, transparent: true, opacity: tetrahedronMenu.Opacity, side: THREE.FrontSide} :
+                                 {color: 0x00FF00, transparent: true, opacity: tetrahedronMenu.Opacity, side: THREE.BackSide}
+                 )
+                );
+            
+                //scene.add(tetrahedron);
+                addFigures();
+            };
+        };
+
+        var cubeMenu = new function(){
+            this.FrontFace = false;
+            this.Opacity = 1;
+
+            this.updateGeo = function(){
+                //scene.remove(cube);
+                removeFigures();
+
+                cube = new THREE.Mesh(boxGeo ,
+                 new THREE.MeshLambertMaterial
+                 (
+                    cubeMenu.FrontFace ? {color: 0xFF0000, transparent: true, opacity: cubeMenu.Opacity, side: THREE.FrontSide} :
+                                 {color: 0xFF0000, transparent: true, opacity: cubeMenu.Opacity, side: THREE.BackSide}
+                 )
+                );
+            
+                //scene.add(cube);
+                addFigures();
+            };
+        };
+
+        var dodecahedronMenu = new function(){
+            this.FrontFace = false;
+            this.Opacity = 1;
+
+            this.updateGeo = function(){
+                //scene.remove(dodecahedron);
+                removeFigures();
+
+                dodecahedron = new THREE.Mesh(dodecahedronGeo ,
+                 new THREE.MeshLambertMaterial
+                 (
+                    dodecahedronMenu.FrontFace ? {color: 0xFFFFFF, transparent: true, opacity: dodecahedronMenu.Opacity, side: THREE.FrontSide} :
+                                 {color: 0xFFFFFF, transparent: true, opacity: dodecahedronMenu.Opacity, side: THREE.BackSide}
+                 )
+                );
+            
+                //scene.add(dodecahedron);
+                addFigures();
+            };
+        };
+
+        var gui = new dat.GUI();
+        gui.add(octahedronMenu, 'FrontFace').onChange(octahedronMenu.updateGeo);
+        gui.add(octahedronMenu, 'Opacity', 0, 1).step(0.1).onChange(octahedronMenu.updateGeo);
+        gui.add(tetrahedronMenu, 'FrontFace').onChange(tetrahedronMenu.updateGeo);
+        gui.add(tetrahedronMenu, 'Opacity', 0, 1).step(0.1).onChange(tetrahedronMenu.updateGeo);
+        gui.add(cubeMenu, 'FrontFace').onChange(cubeMenu.updateGeo);
+        gui.add(cubeMenu, 'Opacity', 0, 1).step(0.1).onChange(cubeMenu.updateGeo);
+        gui.add(dodecahedronMenu, 'FrontFace').onChange(dodecahedronMenu.updateGeo);
+        gui.add(dodecahedronMenu, 'Opacity', 0, 1).step(0.1).onChange(dodecahedronMenu.updateGeo);
+
+     
+        function removeFigures(){
+            scene.remove(octahedron);
+            scene.remove(tetrahedron);
+            scene.remove(cube);
+            scene.remove(dodecahedron);
+        }
+
+        function addFigures(){
+            scene.add(octahedron);
+            scene.add(tetrahedron);
+            scene.add(cube);
+            scene.add(dodecahedron);
+        }
+
+        // logic
+        var update = function(){
+            
+        
+        };
+
+        // draw
+        var render = function(){
+
+            
+            renderer.render(scene, camera);
+        };
+
+        // run loop: update, render, repeat
+        var actionLoop = function(){
+
+            requestAnimationFrame( actionLoop );
+
+            update();
+
+            render();
+        };
+
+        // start "looping"
+        actionLoop();
+ 
+    </script>
+
+
+</body>
+</html>
