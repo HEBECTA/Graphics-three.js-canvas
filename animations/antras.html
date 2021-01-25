@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Antras</title>
+    <script type="text/javascript">
+
+        function draw(){
+        var canvas = document.getElementById('canvas');
+        if (canvas.getContext){
+            var ctx = canvas.getContext("2d");
+
+            var accuracy = 100;
+
+            var t = 1 / accuracy;
+
+            var incr = 0;
+
+            function action(){
+
+                ctx.clearRect(0, 0, 500, 500);
+
+                ctx.save();
+
+                ctx.translate(250*incr, 0*incr);
+
+                ctx.scale(1 - incr * 0.5, 1 - incr * 0.5);
+
+                L();
+
+                ctx.restore();
+
+                if ( incr < 1){
+
+                    incr += t;
+                }
+            }
+
+            function L(){
+            ctx.beginPath();
+            ctx.rect(0, 0, 500, 150);
+            ctx.rect(440, 0, 60, 500);
+            ctx.closePath();
+            ctx.fill();
+            }
+
+            setInterval(action, 50);
+        }
+        }
+
+    </script>
+    <style type="text/css">
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body onload="draw();">
+    <canvas id="canvas" width="500" height="500">
+    </canvas>
+
+</body>
+</html>
