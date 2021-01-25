@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Fractal</title>
+    <script type="text/javascript">
+        function draw(){
+
+        var canvas = document.getElementById('canvas');
+        if (canvas.getContext){
+
+            var ctx = canvas.getContext("2d");
+    
+            // 90
+            var sin90 = Math.sin(Math.PI/2);
+            var cos90 = Math.cos(Math.PI/2);
+        
+            fractal(1, 2);
+
+            function fractal(steps, c){
+            if (steps > 0){
+
+            c -= 1;
+
+            steps = steps - 1;
+
+            // P I R M A S
+            ctx.save();
+            if ( c > 0)
+                ctx.fillStyle = "yellow";
+
+            ctx.transform(cos90/2, sin90/2, -sin90/2, cos90/2, 250, 0);//4
+            fractal(steps);
+
+            // A N T R A S
+            ctx.restore();
+            ctx.save();
+            if ( c > 0)
+                ctx.fillStyle = "green";
+            ctx.transform(0.5, 0, 0, 0.5, 250, 0);//3
+            fractal(steps);
+
+            // T R E C I A S
+            ctx.restore();
+            ctx.save();
+            if ( c > 0)
+                ctx.fillStyle = "red";
+            ctx.transform(-0.25, 0, 0, 0.25, 250, 250);//2
+            fractal(steps);
+
+            // K E T V I R T A S
+            ctx.restore();
+            ctx.save();
+            if ( c > 0)
+                ctx.fillStyle = "black";
+            ctx.transform(-cos90/2, sin90/2, sin90/2, cos90/2, 250, 250);//1
+            fractal(steps);
+            ctx.restore();
+            }
+            else{
+            L();
+            }
+            }
+
+            function L(){
+            ctx.beginPath();
+            ctx.rect(0, 0, 500, 150);
+            ctx.rect(440, 0, 60, 500);
+            ctx.closePath();
+            ctx.fill();
+            }
+        }
+        }
+    </script>
+    <style type="text/css">
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body onload="draw();">
+    <canvas id="canvas" width="500" height="500">
+    </canvas>
+
+</body>
+</html>
